@@ -5,8 +5,7 @@ const taskinput = document.querySelector("#task");
 const tasklist = document.querySelector(".collection");
 const clearbutton = document.querySelector(".clear-tasks");
 const filter = document.querySelector("#filter");
-
-
+let tasks;
 loadEventListener();
 
 function loadEventListener(){
@@ -14,7 +13,22 @@ function loadEventListener(){
     form.addEventListener('submit',addTask);
 
     tasklist.addEventListener('click', removeTask)
+
+    clearbutton.addEventListener('click',clearTask)
 }
+
+function clearTask(e){
+    let li = document.getElementById('li');
+    console.log(tasklist.children);
+    for (i = 1; i <= tasks.length; i++) {
+        console.log(tasklist.children[i]);
+        console.log(i);
+        tasklist.children[0].remove();
+    }
+    
+    localStorage.clear();
+}
+
 
 function addTask(e){
     const li = document.createElement('li');
@@ -33,7 +47,6 @@ function addTask(e){
 }
 
 function storeTaskInLocalStorage(task){
-    let tasks;
 
     if(localStorage.getItem('tasks') === null){
         tasks = [];
