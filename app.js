@@ -16,7 +16,8 @@ function loadEventListener(){
 
     tasklist.addEventListener('click', removeTask)
 
-    clearbutton.addEventListener('click',clearTask)
+    clearbutton.addEventListener('click',clearTasks)
+    filter.addEventListener('keyup',filterTaskss)
 }
 
 function getTasks(){
@@ -33,12 +34,26 @@ function getTasks(){
         li.appendChild(document.createTextNode(task));
         const deleteLink = document.createElement('a');
         deleteLink.className = 'delete-item secondary-content';
-        deleteLink.innerHTML = '<i class = "fa fa-remove">';
+        deleteLink.innerHTML = '<i class="fas fa-hand-spock">';
         li.appendChild(deleteLink);
         tasklist.appendChild(li);
     })
 }
+function filterTaskss(e){
+    const text = e.target.value.toLowerCase();
+    document.querySelectorAll('.collection-item').forEach(function(task){
+        const item = task.firstChild.textContent;
+        if(item.toLowerCase().indexOf(text) != -1){
+            task.style.display = 'block';
+        } 
+        else{
+            task.style.display = 'none';
+        }
+    });
+}
 
+
+// moe rewenie
 function clearTask(e){
     let tasks;
     if(localStorage.getItem('tasks') === null){
@@ -46,23 +61,22 @@ function clearTask(e){
     }
     else{
         tasks = JSON.parse(localStorage.getItem('tasks'));
-        let li = document.getElementById('li');
         console.log(tasklist.children);
         for (i = 1; i <= tasks.length; i++) {
-            try{
-                console.log(tasklist.children[i]);
-                console.log(i);
                 tasklist.children[0].remove();
-            }
-            catch{
-
-            }
         }
         
         localStorage.clear();
     }
     console.log(tasks);
 
+}
+// s klassom
+function clearTasks(e){
+    while(tasklist.firstChild){
+        tasklist.removeChild(tasklist.firstChild);
+    }
+    localStorage.clear();
 }
 
 
@@ -72,7 +86,7 @@ function addTask(e){
     li.appendChild(document.createTextNode(taskinput.value));
     const deleteLink = document.createElement('a');
     deleteLink.className = 'delete-item secondary-content';
-    deleteLink.innerHTML = '<i class = "fa fa-remove">';
+    deleteLink.innerHTML = '<i class="fas fa-hand-spock">';
     li.appendChild(deleteLink);
     tasklist.appendChild(li);
 
@@ -80,6 +94,7 @@ function addTask(e){
 
 
     e.preventDefault();
+    taskinput.value = "";
 }
 
 function storeTaskInLocalStorage(task){
@@ -106,5 +121,21 @@ function removeTask(e){
             e.target.parentElement.parentElement.remove();
         }
     }
-    
+    removeTaskFromLocalStorage(e.target.parentElement.parentElement);
+   
+}
+function removeTaskFromLocalStorage(taskItem){
+ let tasks;
+        if(localStorage.getItem('tasks') === null){
+            tasks = [];
+        }
+        else{
+            tasks = JSON.parse(localStorage.getItem('tasks'));
+        }
+        tasks.forEach(function(task,index){
+            if(taskItem.textContent === task){
+                tasks.splice(index,1);
+            }
+        });
+        localStorage.setItem('tasks',JSON.stringify(tasks));
 }
